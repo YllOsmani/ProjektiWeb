@@ -14,4 +14,19 @@ sign_up_btn2.addEventListener("click", () => {
 });
 sign_in_btn2.addEventListener("click", () => {
     container.classList.remove("sign-up-mode2");
+    if (!username || !password) {
+        alert("Please fill in all fields.");
+        event.preventDefault();
+    }
+
+ 
+document.getElementById("signUpForm").addEventListener("submit", function(event) {
+        const username = this.querySelector('input[type="text"]').value;
+        const email = this.querySelector('input[type="email"]').value;
+        const password = this.querySelector('input[type="password"]').value;
+        if (!username || !email || !password) {
+            alert("Please fill in all fields.");
+            event.preventDefault();
+        }
+    });
 });
