@@ -100,6 +100,7 @@ section .main .main_content .main_text h1 span{
 
 
 section .main .main_content .main_text p{
+    color: #919191;
     font-size:larger;
     font-weight:bolder;
     width: 600px;
