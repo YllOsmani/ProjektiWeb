@@ -23,7 +23,7 @@ body {
     width: 100%;
     color: white;
     background-color: #c0bdbd;
-    border: none;
+    border-style:solid;
     border-radius: 4px;
 }
 
