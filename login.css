@@ -27,6 +27,10 @@ body {
     border-radius: 4px;
 }
 
+#form button:hover{
+	background-color:#a0efb5;
+}
+
 .input-control {
     display: flex;
     flex-direction: column;
