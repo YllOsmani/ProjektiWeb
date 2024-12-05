@@ -107,7 +107,7 @@ section .main .main_content .main_text p{
     line-height: 21px;
     position: relative;
     top: 85px;
-    left: 5%;
+    right: 45%;
 }
 
 section .main .main_content .main_image img{
