@@ -93,7 +93,7 @@ section .main .main_content .main_text h1{
 
 section .main .main_content .main_text h1 span{
     font-size: 70px;
-    background: linear-gradient(to right, #c72092, #3d14d0);
+    background: linear-gradient(to right, #3d14d0, #c72092);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
