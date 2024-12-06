@@ -1,0 +1,246 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #fff; 
+}
+
+
+header {
+    background-color: #fff; 
+    color: #000; 
+    padding: 10px 0;
+    text-align: center;
+}
+
+header .logo h1 {
+    color: #000; 
+    font-size: 36px;
+    font-weight: bold;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: #c72092; 
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+nav ul li a:hover, .active {
+    color: #6c14d0; 
+}
+
+
+.news {
+    background-color: #fff; 
+    color: #000; 
+    padding: 50px 0;
+    text-align: center;
+}
+
+.news-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1); 
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.news-item:hover {
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); 
+}
+
+.news-item img {
+    width: 450px; 
+    height: auto;
+    margin-right: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    border: 2px solid rgba(198, 32, 146, 0.3); 
+    transition: box-shadow 0.3s ease, transform 0.3s ease; 
+
+
+.news-item img:hover {
+    box-shadow: 0 6px 20px rgba(198, 32, 146, 0.5); 
+    transform: scale(1.05); 
+}
+
+.news-content {
+    max-width: 500px;
+    text-align: left;
+    color: #000; 
+}
+
+.news-content h3 {
+    font-size: 26px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #c72092; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+}
+
+.news-content p {
+    font-size: 16px;
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: #6c14d0; 
+    font-weight: 300;
+}
+
+.news-item:hover .news-content p {
+    color: #c72092; 
+}
+
+.offer {
+    font-size: 20px;
+    color: #6c14d0; 
+    font-weight: bold;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+.news-item:hover .offer {
+    background-color: #c72092; 
+    color: #fff; 
+}
+
+
+footer {
+    background-color: #fff; 
+    color: #000; 
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+} body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+}
+
+
+header {
+    background-color: #fff;
+    color: #000;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header .logo h1 {
+    color: #000;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0 20px;
+}
+
+nav ul li a {
+    color: #c72092; 
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+nav ul li a:hover, .active {
+    color: #6c14d0;
+}
+
+
+.home {
+    position: relative;
+    width: 100%;
+    height: 100vh; 
+    background: url('https://png.pngtree.com/background/20230526/original/pngtree-nike-air-max-neon-animation-picture-image_2745095.jpg') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+}
+
+
+.home-content {
+    background-color: rgba(0, 0, 0, 0.5); 
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 800px;
+}
+
+.home-content h2 {
+    font-size: 48px;
+    color: #c72092; 
+    margin-bottom: 20px;
+}
+
+.home-content p {
+    font-size: 24px;
+    color: #fff;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.home-content blockquote {
+    font-size: 20px;
+    color: #fff;
+    font-style: italic;
+    margin: 15px 0;
+}
+
+.home-content a {
+    display: inline-block;
+    font-size: 20px;
+    padding: 15px 30px;
+    background-color: #ff69b4; 
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.home-content a:hover {
+    background-color: #c72092; 
+}
+
+
+footer {
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
