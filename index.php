@@ -51,7 +51,7 @@ require 'requires/header.php';
             <p>Your perfect pair is just a click away.</p>
             <blockquote>"The journey of a thousand steps begins with the right pair of shoes."</blockquote>
             <blockquote>"Step into comfort and style with our exclusive collection."</blockquote>
-            <a href="products.html" class="cta-button">Explore Our Collection</a>
+            <a href="products.php" class="cta-button">Explore Our Collection</a>
         </div>
     </section>
 

@@ -15,16 +15,16 @@
 require 'requires/header.php';
 require 'requires/conn.php';
 
-// Initialize an empty array to store products
+// inicializimi i vargut per produkte
 $products = [];
 
 // SQL query to fetch data from the products table
 $sql = "SELECT id, title, description, price, image FROM products";
 $result = $conn->query($sql);
 
-// Check if there are any records
+// check if there are any records
 if ($result->num_rows > 0) {
-    // Loop through the results and store them in the $products array
+    // loop through the results and store them in the $products array
     while ($row = $result->fetch_assoc()) {
         $products[] = [
             'id' => $row['id'],
@@ -35,11 +35,11 @@ if ($result->num_rows > 0) {
         ];
     }
 } else {
-    // Optionally handle the case when no products are found
+    // optionally handle the case when no products are found
     $products = [];
 }
 
-// Close the connection
+// mbyllja e lidhjes 
 $conn->close();
 ?>
     <section>
