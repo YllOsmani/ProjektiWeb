@@ -1,4 +1,4 @@
-/* Slider container */
+
 .slider {
     position: relative;
     max-width: 100%;
@@ -6,20 +6,20 @@
     overflow: hidden;
 }
 
-/* Container për imazhet */
+
 .slider-container {
     display: flex;
     transition: transform 0.5s ease;
 }
 
-/* Imazhet e slider-it */
+
 .slider-image {
     width: 100%;
     height: auto;
     display: block;
 }
 
-/* Butonat për navigimin */
+
 .prev, .next {
     position: absolute;
     top: 50%;
@@ -33,12 +33,12 @@
     z-index: 10;
 }
 
-/* Butoni 'prev' (shigjeta majtas) */
+
 .prev {
     left: 10px;
 }
 
-/* Butoni 'next' (shigjeta djathtas) */
+
 .next {
     right: 10px;
 }
