@@ -2,7 +2,7 @@ let currentSlide = 0;
 const slides = document.querySelectorAll('.slider-image');
 const totalSlides = slides.length;
 
-// Funksioni për të kaluar në slajdin tjetër ose më të kaluar
+
 function moveSlide(step) {
     currentSlide += step;
 
