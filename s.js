@@ -6,7 +6,6 @@ const totalSlides = slides.length;
 function moveSlide(step) {
     currentSlide += step;
 
-    // Kontrollo nëse duam të kalojmë përtej fundin ose fillimin
     if (currentSlide >= totalSlides) {
         currentSlide = 0; // Kthehet te slajdi i parë
     } else if (currentSlide < 0) {
@@ -16,11 +15,11 @@ function moveSlide(step) {
     updateSliderPosition();
 }
 
-// Funksioni që përditëson pozicionin e slider-it
+
 function updateSliderPosition() {
     const newTransformValue = -currentSlide * 100;
     document.querySelector('.slider-container').style.transform = `translateX(${newTransformValue}%)`;
 }
 
-// Fillimisht, shfaq slajdin e parë
+
 updateSliderPosition();
