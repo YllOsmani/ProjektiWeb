@@ -25,13 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssds", $title, $description, $price, $imagePath);
 
     if ($stmt->execute()) {
- 
-        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, timestamp) VALUES (?, ?, NOW())");
-        $action = "Added a new product: " . $title;
-        $log_stmt->bind_param("is", $user_id, $action);
-        $log_stmt->execute();
-        $log_stmt->close();
-
         header("Location: dashboard.php");
         exit();
     } else {
