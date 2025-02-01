@@ -2,7 +2,7 @@
 require 'requires/conn.php';
 require 'requires/header.php';
 
-
+// nese useri esht logged in dhe esht admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php");
     exit();
@@ -20,21 +20,31 @@ if (!$user) {
     exit();
 }
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $role = $_POST['role'];
-
+    $action_performed = "update user";  // logged in si "update user"
+    
+    // nese passwordi esht japur, te behet update
     if (!empty($_POST['password'])) {
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
         $stmt = $conn->prepare("UPDATE users SET username=?, email=?, password=?, role=? WHERE id=?");
         $stmt->bind_param("ssssi", $username, $email, $password, $role, $id);
     } else {
+        // nese passwordi nuk esht jep, te behet update email,username
         $stmt = $conn->prepare("UPDATE users SET username=?, email=?, role=? WHERE id=?");
         $stmt->bind_param("sssi", $username, $email, $role, $id);
     }
 
     if ($stmt->execute()) {
+        $user_id = $_SESSION['user_id'];  
+        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, target_user_id, timestamp) VALUES (?, ?, ?, NOW())");
+        $log_stmt->bind_param("isi", $user_id, $action_performed, $id);
+        $log_stmt->execute();
+        $log_stmt->close();
+
         header("Location: dashboard.php");
         exit();
     } else {

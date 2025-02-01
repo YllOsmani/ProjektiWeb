@@ -15,16 +15,15 @@
 require 'requires/header.php';
 require 'requires/conn.php';
 
-// inicializimi i vargut per produkte
+
 $products = [];
 
-// SQL query to fetch data from the products table
+
 $sql = "SELECT id, title, description, price, image FROM products";
 $result = $conn->query($sql);
 
-// check if there are any records
+
 if ($result->num_rows > 0) {
-    // loop through the results and store them in the $products array
     while ($row = $result->fetch_assoc()) {
         $products[] = [
             'id' => $row['id'],
@@ -35,13 +34,24 @@ if ($result->num_rows > 0) {
         ];
     }
 } else {
-    // optionally handle the case when no products are found
+    
     $products = [];
 }
 
-// mbyllja e lidhjes 
+
+$action = "Fetched all products from the products table";
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null; 
+$timestamp = date("Y-m-d H:i:s");
+
+$logStmt = $conn->prepare("INSERT INTO log (user_id, action, timestamp) VALUES (?, ?, ?)");
+$logStmt->bind_param("iss", $user_id, $action, $timestamp);
+$logStmt->execute();
+$logStmt->close();
+
+
 $conn->close();
 ?>
+
     <section>
     
 
@@ -187,7 +197,7 @@ $conn->close();
 
             <div class="tag">
                 <h1>Newsletter</h1>
-                <div class="search_bar">
+                <div class="search_bar"> 
                     <input type="text" placeholder="You email id here">
                     <button type="submit">Subscribe</button>
                 </div>

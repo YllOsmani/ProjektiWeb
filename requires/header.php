@@ -11,6 +11,7 @@ session_start();
             <li><a href="index.php" class="home-link">Home</a></li>
             <li><a href="products.php">Products</a></li>
             <li><a href="#" class="news-link">News</a></li>
+            <li><a href="contactus.php">Contact Us</a></li>
             <?php if (isset($_SESSION['username'])): ?>
                 <li><a href="#"><?php echo htmlspecialchars($_SESSION['username']); ?></a></li>
                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>

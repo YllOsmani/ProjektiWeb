@@ -2,11 +2,11 @@
 require 'requires/conn.php';
 require 'requires/header.php';  
 
-// sigurimi qe useri eshte admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php");
     exit();
 }
+
 
 $id = $_GET['id'] ?? 0;
 $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
@@ -25,7 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $description = trim($_POST['description']);
     $price = trim($_POST['price']);
     
-    
     if (!empty($_FILES['image']['name'])) {
         $imageDir = "images/";
         $imagePath = $imageDir . basename($_FILES['image']['name']);
@@ -34,11 +33,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $imagePath = $product['image'];
     }
 
-    // update i produktit ne databaze
+ 
     $stmt = $conn->prepare("UPDATE products SET title=?, description=?, price=?, image=? WHERE id=?");
     $stmt->bind_param("ssdsi", $title, $description, $price, $imagePath, $id);
 
     if ($stmt->execute()) {
+       
+        $userId = $_SESSION['user_id'];
+        $action = "Updated product with ID $id (Title: $title)";
+        $logStmt = $conn->prepare("INSERT INTO logs (user_id, action) VALUES (?, ?)");
+        $logStmt->bind_param("is", $userId, $action);
+        $logStmt->execute();
+        $logStmt->close();
+
+        
         header("Location: dashboard.php");
         exit();
     } else {
@@ -82,3 +90,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
+

@@ -2,7 +2,6 @@
 require 'requires/conn.php';
 require 'requires/header.php';  
 
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php");
     exit();
@@ -12,8 +11,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = trim($_POST['title']);
     $description = trim($_POST['description']);
     $price = trim($_POST['price']);
+    $user_id = $_SESSION['user_id']; 
 
-   
     $imagePath = "";
     if (!empty($_FILES['image']['name'])) {
         $imageDir = "images/";
@@ -21,11 +20,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
     }
 
-   
+    // insertimi ne tabelen e produkteve
     $stmt = $conn->prepare("INSERT INTO products (title, description, price, image) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssds", $title, $description, $price, $imagePath);
 
     if ($stmt->execute()) {
+ 
+        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, timestamp) VALUES (?, ?, NOW())");
+        $action = "Added a new product: " . $title;
+        $log_stmt->bind_param("is", $user_id, $action);
+        $log_stmt->execute();
+        $log_stmt->close();
+
         header("Location: dashboard.php");
         exit();
     } else {
@@ -66,3 +72,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
+

@@ -84,12 +84,12 @@
             return isValid;
         };
 
-        // Form submission event listener
+     
         form.addEventListener('submit', (e) => {
-            e.preventDefault();  // Prevent default form submission
+            e.preventDefault();
 
             if (validateInputs()) {
-                form.submit();  // Submit form if validation passes
+                form.submit(); 
             }
         });
     </script>
