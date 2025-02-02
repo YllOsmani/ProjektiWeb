@@ -2,6 +2,7 @@
 require 'requires/conn.php';
 require 'requires/header.php'; 
 
+// useri nese esht admini
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php");
     exit();
@@ -14,15 +15,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $role = $_POST['role'];
     $admin_id = $_SESSION['user_id'];  
 
-    // insertimi i userit ne tabelen e users
+    // insertimi ne tabelen e user-ave
     $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $username, $email, $password, $role);
 
     if ($stmt->execute()) {
-      
-        $log_action = "Admin (ID: $admin_id) created a new user (Email: $email, Role: $role)";
-        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, timestamp) VALUES (?, ?, NOW())");
-        $log_stmt->bind_param("is", $admin_id, $log_action);
+        $new_user_id = $stmt->insert_id;
+
+        // log me success 
+        $log_action = "Created a new user";
+        $action_details = "Admin ID: $admin_id created User ID: $new_user_id (Email: $email, Role: $role)";
+        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, action_details, timestamp) VALUES (?, ?, ?, NOW())");
+        $log_stmt->bind_param("iss", $admin_id, $log_action, $action_details);
         $log_stmt->execute();
         $log_stmt->close();
 
@@ -31,13 +35,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Error adding user.";
 
-        
-        $log_action = "Admin (ID: $admin_id) failed to create user (Email: $email)";
-        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, timestamp) VALUES (?, ?, NOW())");
-        $log_stmt->bind_param("is", $admin_id, $log_action);
+        // Log failed user creation
+        $log_action = "Failed to create user";
+        $action_details = "Admin ID: $admin_id failed to create user with Email: $email. Error: " . $stmt->error;
+        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, action_details, timestamp) VALUES (?, ?, ?, NOW())");
+        $log_stmt->bind_param("iss", $admin_id, $log_action, $action_details);
         $log_stmt->execute();
         $log_stmt->close();
     }
+
     $stmt->close();
 }
 ?>

@@ -2,24 +2,31 @@
 require 'requires/conn.php';
 require 'requires/header.php';
 
-
+// Check if user is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php");
     exit();
 }
 
-
 $limit = 10;
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-
+// fetch users
 $userQuery = "SELECT * FROM users LIMIT $limit OFFSET $offset";
 $userResult = $conn->query($userQuery);
 
-
+// fetch products
 $productQuery = "SELECT * FROM products LIMIT $limit OFFSET $offset";
 $productResult = $conn->query($productQuery);
+
+// fetch logs
+$logQuery = "SELECT logs.*, users.username FROM logs JOIN users ON logs.user_id = users.id ORDER BY timestamp DESC LIMIT $limit OFFSET $offset";
+$logResult = $conn->query($logQuery);
+
+// fetch contact messages
+$contactQuery = "SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
+$contactResult = $conn->query($contactQuery);
 
 
 $userCountQuery = "SELECT COUNT(*) AS total FROM users";
@@ -29,6 +36,14 @@ $totalUserPages = ceil($totalUsers / $limit);
 $productCountQuery = "SELECT COUNT(*) AS total FROM products";
 $totalProducts = $conn->query($productCountQuery)->fetch_assoc()['total'];
 $totalProductPages = ceil($totalProducts / $limit);
+
+$logCountQuery = "SELECT COUNT(*) AS total FROM logs";
+$totalLogs = $conn->query($logCountQuery)->fetch_assoc()['total'];
+$totalLogPages = ceil($totalLogs / $limit);
+
+$contactCountQuery = "SELECT COUNT(*) AS total FROM contact_messages";
+$totalMessages = $conn->query($contactCountQuery)->fetch_assoc()['total'];
+$totalMessagePages = ceil($totalMessages / $limit);
 ?>
 
 <!DOCTYPE html>
@@ -45,6 +60,39 @@ $totalProductPages = ceil($totalProducts / $limit);
     <div class="container">
         <h1>Admin Dashboard</h1>
 
+        <!-- Logs Section -->
+        <div class="section">
+            <h2>Activity Logs</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Admin</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($log = $logResult->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo $log['id']; ?></td>
+                            <td><?php echo htmlspecialchars($log['username']); ?></td>
+                            <td><?php echo htmlspecialchars($log['action']); ?></td>
+                            <td><?php echo htmlspecialchars($log['action_details']); ?></td>
+                            <td><?php echo $log['timestamp']; ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+            <div class="pagination">
+                <?php for ($i = 1; $i <= $totalLogPages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo ($page == $i) ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                <?php endfor; ?>
+            </div>
+        </div>
+
+        <!-- Users Section -->
         <div class="section">
             <h2>Users</h2>
             <a href="create_user.php" class="btn">Create User</a>
@@ -82,6 +130,7 @@ $totalProductPages = ceil($totalProducts / $limit);
             </div>
         </div>
 
+        <!-- Products Section -->
         <div class="section">
             <h2>Products</h2>
             <a href="create_product.php" class="btn">Create Product</a>
@@ -118,6 +167,39 @@ $totalProductPages = ceil($totalProducts / $limit);
                 <?php endfor; ?>
             </div>
         </div>
+
+        <!-- Contact Messages Section -->
+        <div class="section">
+            <h2>Contact Messages</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Message</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($message = $contactResult->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo $message['id']; ?></td>
+                            <td><?php echo htmlspecialchars($message['name']); ?></td>
+                            <td><?php echo htmlspecialchars($message['email']); ?></td>
+                            <td><?php echo htmlspecialchars($message['message']); ?></td>
+                            <td><?php echo $message['created_at']; ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+            <div class="pagination">
+                <?php for ($i = 1; $i <= $totalMessagePages; $i++): ?>
+                    <a href="?page=<?php echo $i; ?>" class="<?php echo ($page == $i) ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                <?php endfor; ?>
+            </div>
+        </div>
+
     </div>
 
 </body>

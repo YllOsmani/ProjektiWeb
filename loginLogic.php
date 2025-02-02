@@ -19,29 +19,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
     $result = $stmt->get_result();
 
- 
-    $action = ($result->num_rows === 1) ? "Successful login attempt" : "Failed login attempt";
-    $logStmt = $conn->prepare("INSERT INTO logs (email, action, timestamp) VALUES (?, ?, NOW())");
-    $logStmt->bind_param("ss", $email, $action);
+    // fetch user data once
+    $user = $result->fetch_assoc();
+
+    if ($user) {
+        $user_id = $user['id'];
+        $action = "Successful login attempt";
+    } else {
+        $user_id = null;
+        $action = "Failed login attempt";
+    }
+
+    // log attempt
+    $action_details = "Login attempt for email: " . $email;
+    $logStmt = $conn->prepare("INSERT INTO logs (user_id, action, action_details, timestamp) VALUES (?, ?, ?, NOW())");
+    $logStmt->bind_param("iss", $user_id, $action, $action_details);
     $logStmt->execute();
     $logStmt->close();
 
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
+    // check login credentials
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['role'] = $user['role'];
 
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['role'] = $user['role'];
-
-            header("Location: index.php");
-            exit();
-        } else {
-            echo "Invalid email or password.";
-        }
+        header("Location: index.php");
+        exit();
     } else {
-        echo "User not found.";
+        echo "Invalid email or password.";
     }
 
     $stmt->close();

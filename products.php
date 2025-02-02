@@ -39,14 +39,6 @@ if ($result->num_rows > 0) {
 }
 
 
-$action = "Fetched all products from the products table";
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null; 
-$timestamp = date("Y-m-d H:i:s");
-
-$logStmt = $conn->prepare("INSERT INTO log (user_id, action, timestamp) VALUES (?, ?, ?)");
-$logStmt->bind_param("iss", $user_id, $action, $timestamp);
-$logStmt->execute();
-$logStmt->close();
 
 
 $conn->close();
@@ -81,7 +73,7 @@ $conn->close();
 
         <div class="box">
         <?php
-// Loop through the $products array and generate the HTML
+// loop through the $products array and generate the HTML
             foreach ($products as $product) {
                 echo '<div class="card">';
 

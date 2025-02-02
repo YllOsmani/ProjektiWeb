@@ -1,14 +1,16 @@
 <?php
 require 'requires/conn.php';
-require 'requires/header.php';  
+require 'requires/header.php';
+
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php");
     exit();
 }
 
-
 $id = $_GET['id'] ?? 0;
+
+// fetch detajet e produktit
 $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
@@ -24,33 +26,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = trim($_POST['title']);
     $description = trim($_POST['description']);
     $price = trim($_POST['price']);
-    
+    $imagePath = $product['image']; // prej default ne nje imazh qe ekziston
+
+    // imazh i ri nese esht dhene
     if (!empty($_FILES['image']['name'])) {
         $imageDir = "images/";
-        $imagePath = $imageDir . basename($_FILES['image']['name']);
-        move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
-    } else {
-        $imagePath = $product['image'];
+        $newImagePath = $imageDir . basename($_FILES['image']['name']);
+
+        if (move_uploaded_file($_FILES['image']['tmp_name'], $newImagePath)) {
+            // fshirja e fotos se vjeter nese vendos nje foto e re
+            if (!empty($product['image']) && file_exists($product['image'])) {
+                unlink($product['image']);
+            }
+            $imagePath = $newImagePath; 
+        }
     }
 
- 
+    // update produktit ne databaze
     $stmt = $conn->prepare("UPDATE products SET title=?, description=?, price=?, image=? WHERE id=?");
     $stmt->bind_param("ssdsi", $title, $description, $price, $imagePath, $id);
 
     if ($stmt->execute()) {
-       
-        $userId = $_SESSION['user_id'];
-        $action = "Updated product with ID $id (Title: $title)";
-        $logStmt = $conn->prepare("INSERT INTO logs (user_id, action) VALUES (?, ?)");
-        $logStmt->bind_param("is", $userId, $action);
+        // log product update
+        $adminId = $_SESSION['user_id'];
+        $log_action = "Updated product";
+        $action_details = "Admin ID: $adminId updated Product ID: $id (Title: $title, Price: $price)";
+
+        $logStmt = $conn->prepare("INSERT INTO logs (user_id, action, action_details, timestamp) VALUES (?, ?, ?, NOW())");
+        $logStmt->bind_param("iss", $adminId, $log_action, $action_details);
         $logStmt->execute();
         $logStmt->close();
 
-        
+        // redirect to dashboard
         header("Location: dashboard.php");
         exit();
     } else {
         echo "Error updating product.";
+
+        // log failed update
+        $log_action = "Failed to update product";
+        $action_details = "Admin ID: $adminId failed to update Product ID: $id. Error: " . $stmt->error;
+
+        $logStmt = $conn->prepare("INSERT INTO logs (user_id, action, action_details, timestamp) VALUES (?, ?, ?, NOW())");
+        $logStmt->bind_param("iss", $adminId, $log_action, $action_details);
+        $logStmt->execute();
+        $logStmt->close();
     }
     $stmt->close();
 }
@@ -90,4 +110,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
-

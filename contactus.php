@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if (isset($error_message)) echo "<p class='error'>$error_message</p>"; ?>
 
       
-        <form action="contact.php" method="POST">
+        <form action="" method="POST">
             <div class="input-group">
                 <input type="text" id="name" name="name" placeholder="Your Name" required>
             </div>

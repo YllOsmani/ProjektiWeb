@@ -2,6 +2,7 @@
 require 'requires/conn.php';
 require 'requires/header.php';  
 
+// nese useri esht admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: index.php");
     exit();
@@ -11,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = trim($_POST['title']);
     $description = trim($_POST['description']);
     $price = trim($_POST['price']);
-    $user_id = $_SESSION['user_id']; 
+    $user_id = $_SESSION['user_id']; // admini qe shton produktin
 
     $imagePath = "";
     if (!empty($_FILES['image']['name'])) {
@@ -25,11 +26,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("ssds", $title, $description, $price, $imagePath);
 
     if ($stmt->execute()) {
+        $product_id = $stmt->insert_id; // id e produktit qe esht shtuar
+
+        // Log successful product creation
+        $log_action = "Created a new product";
+        $action_details = "Admin ID: $user_id created Product ID: $product_id (Title: $title, Price: $price)";
+        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, action_details, timestamp) VALUES (?, ?, ?, NOW())");
+        $log_stmt->bind_param("iss", $user_id, $log_action, $action_details);
+        $log_stmt->execute();
+        $log_stmt->close();
+
         header("Location: dashboard.php");
         exit();
     } else {
         echo "Error adding product.";
+
+      
+        $log_action = "Failed to create product";
+        $action_details = "Admin ID: $user_id failed to create product (Title: $title). Error: " . $stmt->error;
+        $log_stmt = $conn->prepare("INSERT INTO logs (user_id, action, action_details, timestamp) VALUES (?, ?, ?, NOW())");
+        $log_stmt->bind_param("iss", $user_id, $log_action, $action_details);
+        $log_stmt->execute();
+        $log_stmt->close();
     }
+
     $stmt->close();
 }
 ?>
@@ -65,4 +85,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
 </body>
 </html>
-
